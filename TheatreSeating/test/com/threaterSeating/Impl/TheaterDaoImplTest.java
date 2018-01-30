@@ -37,6 +37,10 @@ public class TheaterDaoImplTest {
 		
 		Map<String, ViewersAllocate> seats = theaterDao.seatsAllocation();
 		Assert.assertNotNull(seats);
+		for(Entry<String, ViewersAllocate> viewers : seats.entrySet()) {
+			Assert.assertEquals(viewers.getValue().getRowNumber(), 1);
+		}
+		
 	}
 	
 	@Test
@@ -62,6 +66,21 @@ public class TheaterDaoImplTest {
 		Assert.assertNotNull(seats);
 		for(Entry<String, ViewersAllocate> results : seats.entrySet()) {
 			Assert.assertEquals(results.getValue().getDiffRow(), "Call to split party");
+		}
+	}
+	
+	@Test
+	public void testAllocateSeatsWhenNotEnoghSits() {
+		try {
+			boolean result = theaterDao.allocateSeats("Sachin", 100);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		Map<String, ViewersAllocate> seats = theaterDao.seatsAllocation();
+		Assert.assertNotNull(seats);
+		for(Entry<String, ViewersAllocate> results : seats.entrySet()) {
+			Assert.assertEquals(results.getValue().getDiffRow(), "Sorry, we can't handle your party.");
 		}
 	}
 }

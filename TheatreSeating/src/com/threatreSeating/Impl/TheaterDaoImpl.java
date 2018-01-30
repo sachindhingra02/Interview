@@ -16,6 +16,7 @@ public class TheaterDaoImpl implements TheaterDao {
 	private Map<Integer,Map<Integer, Integer>> numberOfSeatsUsdEachRow = new TreeMap<Integer,Map<Integer, Integer>>();
 	private Map<String, ViewersAllocate> allocatedSeats = new HashMap<String, ViewersAllocate>();
 	public static final String DIFF_ROW = "Call to split party";
+	public static final String NOT_HANDLE= "Sorry, we can't handle your party.";
 	
 	public void populateSeats(int rowNumber, int section, int numberOfSeats) {
 		Map<Integer, Integer> rowSectn = seats.get(rowNumber);
@@ -33,6 +34,12 @@ public class TheaterDaoImpl implements TheaterDao {
 		}
 		
 		if(seats == null || seats.size() == 0) {
+			return false;
+		}
+		
+		if((numberOfSeatsUsd + requiredSeats) > totalNumberOfSeats) {
+			ViewersAllocate viewersAllocate = new ViewersAllocate(NOT_HANDLE);
+			allocatedSeats.put(viewerName, viewersAllocate);
 			return false;
 		}
 		
@@ -57,12 +64,11 @@ public class TheaterDaoImpl implements TheaterDao {
 					usdRowSections.put(section, (usdSeats + requiredSeats));
 					numberOfSeatsUsd += requiredSeats;
 					return true;
-				} else {
-					ViewersAllocate viewersAllocate = new ViewersAllocate(DIFF_ROW);
-					allocatedSeats.put(viewerName, viewersAllocate);
-					return true;
-				}
+				} 
 			}
+		
+			ViewersAllocate viewersAllocate = new ViewersAllocate(DIFF_ROW);
+			allocatedSeats.put(viewerName, viewersAllocate);
 		}
 		return false;
 	}
