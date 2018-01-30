@@ -7,6 +7,7 @@ import java.util.TreeMap;
 
 import com.threatreSeating.Dao.TheaterDao;
 import com.threatreSeating.Domain.ViewersAllocate;
+import com.threatreSeating.constant.TheaterConstants;
 
 public class TheaterDaoImpl implements TheaterDao {
 	
@@ -15,8 +16,6 @@ public class TheaterDaoImpl implements TheaterDao {
 	private long numberOfSeatsUsd = 0;
 	private Map<Integer,Map<Integer, Integer>> numberOfSeatsUsdEachRow = new TreeMap<Integer,Map<Integer, Integer>>();
 	private Map<String, ViewersAllocate> allocatedSeats = new HashMap<String, ViewersAllocate>();
-	public static final String DIFF_ROW = "Call to split party";
-	public static final String NOT_HANDLE= "Sorry, we can't handle your party.";
 	
 	public void populateSeats(int rowNumber, int section, int numberOfSeats) {
 		Map<Integer, Integer> rowSectn = seats.get(rowNumber);
@@ -38,8 +37,7 @@ public class TheaterDaoImpl implements TheaterDao {
 		}
 		
 		if((numberOfSeatsUsd + requiredSeats) > totalNumberOfSeats) {
-			ViewersAllocate viewersAllocate = new ViewersAllocate(NOT_HANDLE);
-			allocatedSeats.put(viewerName, viewersAllocate);
+			notFulFill(viewerName, TheaterConstants.NOT_HANDLE);	
 			return false;
 		}
 		
@@ -67,10 +65,14 @@ public class TheaterDaoImpl implements TheaterDao {
 				} 
 			}
 		
-			ViewersAllocate viewersAllocate = new ViewersAllocate(DIFF_ROW);
-			allocatedSeats.put(viewerName, viewersAllocate);
+			notFulFill(viewerName, TheaterConstants.DIFF_ROW);	
 		}
 		return false;
+	}
+	
+	private void notFulFill(String viewerName, String issue) {
+		ViewersAllocate viewersAllocate = new ViewersAllocate(issue);
+		allocatedSeats.put(viewerName, viewersAllocate);
 	}
 
 	public Map<String, ViewersAllocate> seatsAllocation() {

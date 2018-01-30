@@ -39,6 +39,7 @@ public class TheaterDaoImplTest {
 		Assert.assertNotNull(seats);
 		for(Entry<String, ViewersAllocate> viewers : seats.entrySet()) {
 			Assert.assertEquals(viewers.getValue().getRowNumber(), 1);
+			Assert.assertEquals(viewers.getValue().getSectionNumber(), 1);
 		}
 		
 	}
